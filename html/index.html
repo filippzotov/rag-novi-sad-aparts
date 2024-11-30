@@ -108,6 +108,7 @@
 
       const API_URL = "{{API_URL}}"; // This will be dynamically replaced by FastAPI
 
+      // Function to send a message
       async function sendMessage() {
         const input = document.getElementById("messageText");
         const message = input.value.trim();
@@ -143,6 +144,7 @@
         input.value = "";
       }
 
+      // Function to display a message
       function displayMessage(text, sender) {
         const messageDiv = document.createElement("div");
         messageDiv.innerHTML = marked.parse(text); // Render Markdown
@@ -151,12 +153,25 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
       }
 
+      // Function to display the introductory message
+      function displayIntroMessage() {
+        const introMessage =
+          "Hello! I'm your bot assistant. I can help you find an apartment in Novi Sad. How can I assist you today?";
+        displayMessage(introMessage, "bot");
+      }
+
+      // Event listener for Enter key
       function handleKeyDown(event) {
         if (event.key === "Enter") {
           event.preventDefault(); // Prevent newline
           sendMessage(); // Trigger message sending
         }
       }
+
+      // Display the introductory message when the page loads
+      window.onload = function () {
+        displayIntroMessage();
+      };
     </script>
   </body>
 </html>

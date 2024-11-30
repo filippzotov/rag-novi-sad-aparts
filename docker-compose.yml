@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     container_name: cityexpert_app
     ports:
-      - "8000:8000"
+      - "8050:8000" # Map host port 8050 to container port 8000
     env_file:
       - .env
     environment:
