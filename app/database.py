@@ -10,7 +10,6 @@ load_dotenv()
 # Get DATABASE_URL from environment variables
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg2://username:password@localhost:5432/cityexpert",  # Default for local development
 )
 
 # Create the SQLAlchemy engine
