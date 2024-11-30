@@ -20,8 +20,7 @@ services:
       - "8050:8000" # Map host port 8050 to container port 8000
     env_file:
       - .env
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5443/${POSTGRES_DB} # Updated to use 5443
+
     depends_on:
       - db
     volumes:
