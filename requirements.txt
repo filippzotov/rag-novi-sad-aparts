@@ -1,0 +1,20 @@
+fastapi
+uvicorn
+python-multipart  # Needed for form parsing if you handle file uploads
+aiofiles          # For serving static files
+jinja2            # For HTML templating (optional)
+pydantic<2.0
+# Existing dependencies
+requests
+sqlalchemy
+psycopg2-binary
+langchain
+langchain-community
+langchain-experimental
+python-dotenv
+openai
+starlette
+websockets
+python-socketio 
+fastapi-socketio
+langchain-openai

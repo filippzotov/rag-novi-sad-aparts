@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Chat Widget with Markdown and Animations</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #chatbox {
+        width: 600px;
+        height: 500px;
+        border: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 50px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        padding: 10px;
+      }
+      #messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+      }
+      #messages div {
+        margin: 10px 0;
+        padding: 8px 12px;
+        border-radius: 10px;
+        max-width: 70%;
+        opacity: 0; /* Hidden initially for animation */
+        transform: translateY(20px); /* Slide in from below */
+        animation: fadeInUp 0.3s forwards;
+      }
+      #messages .user {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+        text-align: right;
+      }
+      #messages .bot {
+        background-color: #e0e0e0;
+        color: black;
+        align-self: flex-start;
+        text-align: left;
+      }
+      #messages .typing {
+        font-style: italic;
+        color: #888;
+      }
+      #input-container {
+        display: flex;
+        border-top: 1px solid #ccc;
+      }
+      #input-container input {
+        flex-grow: 1;
+        padding: 10px;
+        border: none;
+        font-size: 16px;
+      }
+      #input-container button {
+        padding: 10px 15px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      #input-container button:hover {
+        background-color: #0056b3;
+      }
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="chatbox">
+      <div id="messages"></div>
+      <div id="input-container">
+        <input
+          type="text"
+          id="messageText"
+          placeholder="Type a message and press Enter"
+          onkeydown="handleKeyDown(event)"
+        />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      const messagesDiv = document.getElementById("messages");
+
+      async function sendMessage() {
+        const input = document.getElementById("messageText");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Display user message
+        displayMessage(message, "user");
+
+        // Show bot typing animation
+        const typingDiv = document.createElement("div");
+        typingDiv.textContent = "Bot is typing...";
+        typingDiv.classList.add("bot", "typing");
+        messagesDiv.appendChild(typingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        // Call backend API
+        try {
+          const response = await fetch("http://127.0.0.1:8000/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+          messagesDiv.removeChild(typingDiv); // Remove typing animation
+          displayMessage(data.reply, "bot");
+        } catch (error) {
+          messagesDiv.removeChild(typingDiv); // Remove typing animation
+          displayMessage("Sorry, I couldn't connect to the server.", "bot");
+          console.error(error);
+        }
+
+        input.value = ""; // Clear input
+      }
+
+      function displayMessage(text, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.innerHTML = marked.parse(text); // Render Markdown
+        messageDiv.classList.add(sender); // Add class for styling
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
+      }
+
+      function handleKeyDown(event) {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent newline
+          sendMessage(); // Trigger message sending
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:13
+    container_name: cityexpert_db
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: cityexpert
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cityexpert_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql+psycopg2://your_username:your_password@db:5432/cityexpert"
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    command: python main.py
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: cityexpert_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # Default login email
+      PGADMIN_DEFAULT_PASSWORD: admin # Default login password
+    ports:
+      - "5050:80" # Maps port 5050 on your machine to pgAdmin in the container
+    depends_on:
+      - db
+
+  rasa:
+    image: rasa/rasa:3.5.0
+    container_name: rasa_server
+    ports:
+      - "5005:5005" # Rasa's default port
+    volumes:
+      - ./rasa:/app # Mount the Rasa project directory
+    command:
+      - run
+      - "--enable-api" # Enable Rasa REST API
+      - "--cors" # Allow CORS
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

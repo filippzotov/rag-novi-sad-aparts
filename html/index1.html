@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Application</title>
+  </head>
+  <body>
+    <!-- Web Chat container -->
+    <div id="webchat" role="main"></div>
+
+    <!-- Include the Web Chat script from CDN -->
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script>
+      const directLineTokenEndpoint = "/directline/token";
+
+      (async function () {
+        const res = await fetch(directLineTokenEndpoint, { method: "POST" });
+        const { token } = await res.json();
+
+        const directLine = window.WebChat.createDirectLine({
+          token: token,
+          domain: `http://${window.location.hostname}:8000/directline`,
+          webSocket: true, // Ensure this is set to true
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: directLine,
+            userID: token, // Use the token as the userID
+            username: "User",
+          },
+          document.getElementById("webchat")
+        );
+      })().catch((err) => console.error(err));
+    </script>
+  </body>
+</html>
