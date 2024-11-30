@@ -126,7 +126,7 @@ def get_all_apartments():
     )
 
     # Получение подробной информации по каждой квартире
-    for apartment in all_apartments[:1]:
+    for apartment in all_apartments[:]:
         # Generate URL
         url = generate_url(apartment)
 
