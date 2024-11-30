@@ -1,9 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.models import Base  # Import Base to create tables
+from dotenv import load_dotenv
 import os
 
-# Load the DATABASE_URL from environment variables
+# Load environment variables from .env file
+load_dotenv()
+
+# Get DATABASE_URL from environment variables
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+psycopg2://username:password@localhost:5432/cityexpert",  # Default for local development

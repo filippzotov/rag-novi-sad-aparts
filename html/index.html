@@ -106,25 +106,24 @@
     <script>
       const messagesDiv = document.getElementById("messages");
 
+      const API_URL = "{{API_URL}}"; // This will be dynamically replaced by FastAPI
+
       async function sendMessage() {
         const input = document.getElementById("messageText");
         const message = input.value.trim();
 
         if (!message) return;
 
-        // Display user message
         displayMessage(message, "user");
 
-        // Show bot typing animation
         const typingDiv = document.createElement("div");
         typingDiv.textContent = "Bot is typing...";
         typingDiv.classList.add("bot", "typing");
         messagesDiv.appendChild(typingDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-        // Call backend API
         try {
-          const response = await fetch("http://127.0.0.1:8000/chat", {
+          const response = await fetch(API_URL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -133,15 +132,15 @@
           });
 
           const data = await response.json();
-          messagesDiv.removeChild(typingDiv); // Remove typing animation
+          messagesDiv.removeChild(typingDiv);
           displayMessage(data.reply, "bot");
         } catch (error) {
-          messagesDiv.removeChild(typingDiv); // Remove typing animation
+          messagesDiv.removeChild(typingDiv);
           displayMessage("Sorry, I couldn't connect to the server.", "bot");
           console.error(error);
         }
 
-        input.value = ""; // Clear input
+        input.value = "";
       }
 
       function displayMessage(text, sender) {

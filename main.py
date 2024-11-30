@@ -26,11 +26,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/chat")
+
+
 # Root endpoint to serve the HTML page
 @app.get("/", response_class=HTMLResponse)
 async def get():
     with open("html/index.html") as f:
-        return HTMLResponse(content=f.read(), status_code=200)
+        html_content = f.read()
+
+    # Inject API_URL into the HTML
+    html_content = html_content.replace("{{API_URL}}", API_URL)
+
+    return HTMLResponse(content=html_content, status_code=200)
 
 
 @app.websocket("/ws/chat")
