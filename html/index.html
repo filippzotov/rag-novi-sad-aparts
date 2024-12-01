@@ -105,17 +105,21 @@
 
     <script>
       const messagesDiv = document.getElementById("messages");
+      const input = document.getElementById("messageText");
+      const sendButton = document.querySelector("#input-container button");
 
-      const API_URL = "{{API_URL}}"; // This will be dynamically replaced by FastAPI
+      const API_URL = "{{API_URL}}"; // Replace with your actual API URL
 
       // Function to send a message
       async function sendMessage() {
-        const input = document.getElementById("messageText");
         const message = input.value.trim();
 
         if (!message) return;
 
+        // Display the user message and clear input
         displayMessage(message, "user");
+        input.value = "";
+        toggleInput(false); // Lock input
 
         const typingDiv = document.createElement("div");
         typingDiv.textContent = "Bot is typing...";
@@ -139,9 +143,9 @@
           messagesDiv.removeChild(typingDiv);
           displayMessage("Sorry, I couldn't connect to the server.", "bot");
           console.error(error);
+        } finally {
+          toggleInput(true); // Unlock input
         }
-
-        input.value = "";
       }
 
       // Function to display a message
@@ -158,6 +162,12 @@
         const introMessage =
           "Hello! I'm your bot assistant. I can help you find an apartment in Novi Sad. How can I assist you today?";
         displayMessage(introMessage, "bot");
+      }
+
+      // Function to toggle input and button states
+      function toggleInput(enable) {
+        input.disabled = !enable;
+        sendButton.disabled = !enable;
       }
 
       // Event listener for Enter key

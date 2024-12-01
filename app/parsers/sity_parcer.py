@@ -140,10 +140,6 @@ def get_all_apartments():
                 detailed_data.append(details)
             # Пауза между запросами, чтобы не перегружать сервер
             time.sleep(1)
-            print(details)
-
-    # Вывод результатов
-    print("\nПодробная информация по квартирам:")
 
     return detailed_data
 

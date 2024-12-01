@@ -1,14 +1,20 @@
 from app.models import Apartment
 from app.database import SessionLocal
 from sqlalchemy.exc import IntegrityError
+from pprint import pprint
 
 
 def save_apartments(apartments):
     db = SessionLocal()
     for apartment in apartments:
         try:
+            # Extracting values from the 'onsite' dictionary
+            onsite = apartment.get("onsite", {})
+
             transformed_apartment = {
+                # Primary Fields
                 "prop_id": apartment.get("propId"),
+                "url": apartment.get("url"),
                 "price": apartment.get("price"),
                 "size": apartment.get("size"),
                 "rooms": apartment.get("structure"),
@@ -16,14 +22,52 @@ def save_apartments(apartments):
                 "street": apartment.get("street"),
                 "neighbourhoods": apartment.get("neighbourhoods", []),
                 "floor": apartment.get("floor"),
-                "year_of_construction": apartment.get("yearOfConstruction"),
-                "heating_options": apartment.get("heatingOptions", []),
-                "deposit_amount": apartment.get("expDepositAmount"),
-                "available_from": apartment.get("basInfAvailableFrom"),
-                "cover_image": apartment.get("onsite", {}).get("coverImage"),
-                "description": apartment.get("addDescriptionSr"),
-                "url": apartment.get("url"),
-                "youtube_video": apartment.get("onsite", {}).get("youtubeVideo"),
+                "year_of_construction": onsite.get("basInfYearOfConstruction", 0),
+                "heating_options": onsite.get("heatingOptions", []),
+                "deposit_amount": onsite.get("expDepositAmount"),
+                "available_from": onsite.get("basInfAvailableFrom"),
+                "cover_image": onsite.get("coverImage"),
+                "youtube_video": onsite.get("youtubeVideo"),
+                "description": onsite.get("addDescriptionSr"),
+                # Features (Furniture and Appliances)
+                "fur_washer": bool(onsite.get("furWasher", False)),
+                "fur_oven": bool(onsite.get("furOven", False)),
+                "fur_fridge": bool(onsite.get("furFridge", False)),
+                "fur_tv": bool(onsite.get("furTV", False)),
+                "fur_aircon": bool(onsite.get("furAircon", False)),
+                "fur_french_bed": bool(onsite.get("furFrenchBed", False)),
+                "fur_tub": bool(onsite.get("furTub", False)),
+                "fur_pullout_bed": bool(onsite.get("furPullOutBed", False)),
+                "fur_corner_sofa": bool(onsite.get("furCornerSofa", False)),
+                "fur_dishwasher": bool(onsite.get("furDishWasher", False)),
+                "fur_vacuum": bool(onsite.get("furVacuum", False)),
+                # Building and Amenities
+                "bldg_opts_elevator": bool(onsite.get("bldgOptsElevator", False)),
+                "bldg_opts_intercom": bool(onsite.get("bldgOptsIntercom", False)),
+                "bldg_opts_surveillance": bool(
+                    onsite.get("bldgOptsSurveillance", False)
+                ),
+                "bldg_opts_ramp": bool(onsite.get("bldgOptsRamp", False)),
+                # Pets and Business Usage
+                "pets_allowed": bool(onsite.get("tolPets", False)),
+                "business_usage_allowed": bool(onsite.get("tolBusiness", False)),
+                # Parking and Distance
+                "parking_in_price": onsite.get("basInfParkingInPrice", 0.0),
+                "distance_to_center": onsite.get("basInfDistanceCenter"),
+                # Additional Information
+                "shared_entrance": bool(onsite.get("basInfSharedEntrance", False)),
+                "shared_electricity_meter": bool(
+                    onsite.get("basInfSharedElectricityMeter", False)
+                ),
+                "renovated": bool(onsite.get("basInfRenovated", False)),
+                "num_bathrooms": onsite.get("numBathrooms", 0),
+                "num_bedrooms": onsite.get("numBedrooms", 0),
+                "num_toilets": onsite.get("numToilets", 0),
+                "total_floors": onsite.get("basInfFloorTotal", 0),
+                # Expiry and Leasing Info
+                "min_lease": onsite.get("tolMinLease"),
+                "max_lease": onsite.get("tolMaxLease"),
+                "max_tenants": onsite.get("tolMaxTenants"),
             }
 
             # Check if the apartment already exists

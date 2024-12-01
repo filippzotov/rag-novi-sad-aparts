@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from app.chatbot.langchain_bot import ask_question
+from app.chatbot.langchain_bot import ask_question, reset_memory
 import uvicorn
 import os
 
@@ -32,6 +32,7 @@ API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/chat")
 # Root endpoint to serve the HTML page
 @app.get("/", response_class=HTMLResponse)
 async def get():
+    reset_memory()  # Reset the conversation memory
     with open("html/index.html") as f:
         html_content = f.read()
 

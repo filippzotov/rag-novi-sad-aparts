@@ -87,6 +87,12 @@ agent_executor = create_sql_agent(
 )
 
 
+def reset_memory():
+    """Resets the conversation memory."""
+    memory.clear()
+    print("Debug: Memory has been reset.")
+
+
 def ask_question(question):
     try:
         # Execute the agent with the input question
