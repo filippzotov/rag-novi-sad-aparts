@@ -18,3 +18,5 @@ websockets
 python-socketio 
 fastapi-socketio
 langchain-openai
+pandas
+faiss-cpu
