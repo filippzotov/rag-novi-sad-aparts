@@ -65,7 +65,7 @@ for index, row in df.iterrows():
         "has_intercom": "intercom",
         "has_surveillance": "surveillance",
         "has_wheelchair_ramp": "wheelchair ramp",
-        "allows_pets": "allows pets",
+        "allows_pets": "allows pets friendly",
         "allows_business_use": "allows business use",
         "has_shared_entrance": "shared entrance",
         "has_shared_electricity_meter": "shared electricity meter",
@@ -96,7 +96,7 @@ for index, row in df.iterrows():
         else None
     )
     price = (
-        f"${row['price_per_month']} per month"
+        f"{row['price_per_month']} euro per month"
         if pd.notnull(row.get("price_per_month"))
         else None
     )
@@ -118,7 +118,9 @@ for index, row in df.iterrows():
     heating_types = (
         ", ".join(row["heating_types"]) if row.get("heating_types") else None
     )
-    deposit = f"Deposit: ${row['deposit']}" if pd.notnull(row.get("deposit")) else None
+    deposit = (
+        f"Deposit: {row['deposit']} euro" if pd.notnull(row.get("deposit")) else None
+    )
     available_date = (
         row.get("available_date").strftime("%Y-%m-%d")
         if row.get("available_date")
@@ -142,7 +144,7 @@ for index, row in df.iterrows():
         f"{floor}." if floor else None,
         f"{construction_year}." if construction_year else None,
         f"Heating types: {heating_types}." if heating_types else None,
-        f"{deposit}." if deposit else None,
+        # f"{deposit}." if deposit else None,
         f"Features: {', '.join(features)}." if features else None,
         f"Available from: {available_date}.",
         f"URL: {listing_url}",
@@ -150,6 +152,7 @@ for index, row in df.iterrows():
 
     # Filter out None values and join the parts
     doc = " ".join(filter(None, description_parts))
+    print(doc)
     documents.append(doc)
 
 # Create embeddings for the documents
